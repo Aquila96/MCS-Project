@@ -1,9 +1,9 @@
-import random, math
-
+"""
+Patches in NetLogo
+"""
+import math
+import random
 random.seed()
-'''
-
-'''
 
 
 class World:
@@ -36,30 +36,30 @@ class World:
                 for j in range(len(self.patches[i])):
                     if self.get_max_grain(i, j) != 0:
                         self.set_grain(i, j, self.get_max_grain(i, j))
-            self.diffuse_all(0.25)
+            self.diffuse(0.25)
         # spread the grain around some more
         for _ in range(10):
-            self.diffuse_all(0.25)
+            self.diffuse(0.25)
         # round grain levels to whole numbers
         for i in range(len(self.patches)):
             for j in range(len(self.patches[i])):
                 self.set_grain(i, j, math.floor(self.get_grain(i, j)))
                 self.set_max_grain(i, j, self.get_grain(i, j))
 
-    def diffuse(self, x, y, portion):
+    def diffuse_single(self, x, y, portion):
         """Share portions of grain to neighbouring patches"""
         self.assert_location(x, y)
         assert 1 > portion > 0
         for p in self.get_neighbours8(x, y):
             self.set_grain(p[0], p[1], self.get_grain(p[0], p[1]) + portion * self.get_grain(x, y) / 8)
-            self.set_grain(x, y, (1 - portion / 8) * self.get_grain(x, y))  # subtract grain from root patch
+            self.set_grain(x, y, (1 - portion / 8) * self.get_grain(x, y))
 
-    def diffuse_all(self, portion):
-        """Diffuse for all patches"""
+    def diffuse(self, portion):
+        """Diffuse for all non-zero patches"""
         for i in range(len(self.patches)):
             for j in range(len(self.patches[i])):
-                if self.get_grain(i, j) != 0:  # only diffuse non-zero patches
-                    self.diffuse(i, j, portion)
+                if self.get_grain(i, j) != 0:
+                    self.diffuse_single(i, j, portion)
 
     def get_neighbours8(self, x, y):
         """Returns 8 neighbouring patches"""
@@ -126,6 +126,15 @@ class World:
     def is_empty(self, x, y):
         """Returns boolean on whether patch is not occupied"""
         return self.patches[x][y][2] is None
+
+    def list_empty_patch(self):
+        """Returns a list of coordinates of patches that are not occupied"""
+        lst = []
+        for i in range(len(self.patches)):
+            for j in range(len(self.patches[i])):
+                if self.is_empty(i, j):
+                    lst.append((i, j))
+        return lst
 
     def set_wealth_range(self, wealth_min, wealth_max):
         """Updates the poorest and richest values for agent reproduction reference"""

@@ -1,3 +1,6 @@
+"""
+Wealth Distribution simulation entrypoint
+"""
 import json
 from world import World
 from utils import spawn_agent
@@ -13,7 +16,9 @@ if __name__ == '__main__':
                   settings['percent_best_land'],
                   settings['grain_growth_interval'],
                   settings['num_grain_grown'])
+
+    agents = []
+    for _ in range(settings['num_people']):
+        agents.append(spawn_agent(settings, world))
+
     print(world.patches)
-    # TODO: random choice free locations
-    #for i in range(settings['num_people']):
-    #    spawn_agent(settings, world)
