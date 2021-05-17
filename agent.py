@@ -1,7 +1,9 @@
 import random
 
 '''
-
+NOTE: 
+1.In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max)
+2.In Netlogo's implementation, agent initial wealth is set to metabolism + randint(0, 50)
 '''
 
 

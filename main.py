@@ -13,6 +13,7 @@ if __name__ == '__main__':
                   settings['percent_best_land'],
                   settings['grain_growth_interval'],
                   settings['num_grain_grown'])
+    print(world.patches)
     # TODO: random choice free locations
-    for i in range(settings['num_people']):
-        spawn_agent(settings, world)
+    #for i in range(settings['num_people']):
+    #    spawn_agent(settings, world)
