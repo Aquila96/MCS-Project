@@ -3,9 +3,11 @@ Patches in NetLogo
 """
 import math
 import random
+
 random.seed()
 
 
+# TODO: Convert (grain-here, max-grain-here, agent) to (grain-here, max-grain-here, [agent]) to enable multiple agent
 class World:
 
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):
@@ -111,12 +113,16 @@ class World:
     def harvest_grain(self, x, y):
         """Sets grain of a patch"""
         self.assert_location(x, y)
-        self.patches[x][y][0] = 0
+        self.patches[x][y] = (0, self.patches[x][y][1], self.patches[x][y][2])
 
     def set_agent(self, x, y, agent):
         """Spawns (or updates) an agent at given patch"""
         self.assert_location(x, y)
         self.patches[x][y] = (self.patches[x][y][0], self.patches[x][y][1], agent)
+
+    def unset_agent(self, x, y):
+        """De-spawns an agent at given patch"""
+        self.patches[x][y] = (self.patches[x][y][0], self.patches[x][y][1], None)
 
     def get_agent(self, x, y):
         """Returns an agent at given patch"""
@@ -136,10 +142,25 @@ class World:
                     lst.append((i, j))
         return lst
 
-    def set_wealth_range(self, wealth_min, wealth_max):
-        """Updates the poorest and richest values for agent reproduction reference"""
+    def update_wealth_range(self):
+        """Updates the poorest and richest values"""
+        wealth_max = 0
+        wealth_min = 10000
+        for i in range(len(self.patches)):
+            for j in range(len(self.patches[i])):
+                if not self.is_empty(i, j):
+                    agent = self.get_agent(i, j)
+                    if agent.get_wealth() > wealth_max:
+                        wealth_max = agent.get_wealth()
+                    if agent.get_wealth() < wealth_min:
+                        wealth_min = agent.get_wealth()
+
         self.wealth_min = wealth_min
         self.wealth_max = wealth_max
+
+    def update(self):
+        """Updates stats about the world"""
+        self.update_wealth_range()
 
     def assert_location(self, x, y):
         """Guards illegal values"""

@@ -8,6 +8,7 @@ NOTE:
 import random
 
 
+# TODO: enable multi-agent harvesting
 class Agent:
 
     def __init__(self, life_expectancy_min, life_expectancy_max, max_metabolism, max_vision, x, y):
@@ -23,22 +24,20 @@ class Agent:
         self.metabolism = None
         self.vision = None
         self.age = None
-        self.x = None
-        self.y = None
+        self.x = x
+        self.y = y
         self.wealth = None
-        self.initialize(self, x, y)
+        self.heading = None
+        self.offspring = False
+        self.initialize()
 
-    def initialize(self, x, y, offspring=False):
-        """
-        Sets initial status of an agent
-        """
+    def initialize(self):
+        """Sets initial status of an agent"""
         self.life_expectancy = random.randint(self.life_expectancy_min, self.life_expectancy_max)
         self.metabolism = random.randint(1, self.max_metabolism)
         self.vision = random.randint(1, self.max_vision)
         self.age = 0
-        self.x = x
-        self.y = y
-        if not offspring:
+        if not self.offspring:
             self.wealth = self.metabolism + random.randint(0, 50)
 
     def aging(self):
@@ -58,6 +57,10 @@ class Agent:
         """Dies from starvation or aging"""
         return self.wealth <= 0 or self.age >= self.life_expectancy
 
+    def get_wealth(self):
+        """Returns wealth"""
+        return self.wealth
+
     def reproduce(self, world):
         """
         Reproduces an offspring with same parameters except for wealth
@@ -65,14 +68,86 @@ class Agent:
         Calls initialize() to re-setup
         """
         if self.is_dead():
-            self.initialize(self, self.x, self.y, offspring=True)
+            self.offspring = True
+            self.initialize()
             self.wealth = random.randint(world.wealth_min, world.wealth_max)
 
-    # TODO: moving logic
+    def grain_ahead(self, world, heading):
+        """Returns grain count within vision"""
+        total = 0
+        for v in range(1, self.vision + 1):
+            if heading == 0 and self.x - v > -1:
+                total += world.get_grain(self.x - v, self.y)
+            if heading == 90 and self.y + v < world.y:
+                total += world.get_grain(self.x, self.y + v)
+            if heading == 180 and self.x + v < world.x:
+                total += world.get_grain(self.x + v, self.y)
+            if heading == 270 and self.y - v > -1:
+                total += world.get_grain(self.x, self.y - v)
+        return total
 
+    def turn_towards_grain(self, world):
+        """Best heading"""
+        self.heading = 0
+        best_direction = 0
+        best_amount = self.grain_ahead(world, 0)
+        if self.grain_ahead(world, 90) > best_amount:
+            best_direction = 90
+        if self.grain_ahead(world, 180) > best_amount:
+            best_direction = 180
+        if self.grain_ahead(world, 270) > best_amount:
+            best_direction = 270
+        if best_amount == 0:
+            self.turn_towards_random()
+        else:
+            self.heading = best_direction
 
-'''
+    def turn_towards_random(self):
+        """Random heading"""
+        self.heading = random.choice([0, 90, 180, 270])
+
+    def move_random(self, world):
+        """Move to random direction"""
+        self.turn_towards_random()
+        self.move(world)
+
     def move(self, world):
-        """Core logic for navigating the world"""
-        
-'''
+        """Moves to heading"""
+        self.turn_towards_grain(world)
+        if self.heading == 0:
+            if self.x - 1 > -1:
+                world.unset_agent(self.x, self.y)
+                world.set_agent(self.x - 1, self.y, self)
+            else:
+                self.move_random(world)
+        if self.heading == 90:
+            if self.y + 1 < world.y:
+                world.unset_agent(self.x, self.y)
+                world.set_agent(self.x, self.y + 1, self)
+            else:
+                self.move_random(world)
+        if self.heading == 180:
+            if self.x + 1 < world.x:
+                world.unset_agent(self.x, self.y)
+                world.set_agent(self.x + 1, self.y, self)
+            else:
+                self.move_random(world)
+        if self.heading == 270:
+            if self.y - 1 > -1:
+                world.unset_agent(self.x, self.y)
+                world.set_agent(self.x, self.y - 1, self)
+            else:
+                self.move_random(world)
+
+    def harvest(self, world):
+        """Harvests grain"""
+        self.wealth += world.get_grain(self.x, self.y)
+        world.harvest_grain(self.x, self.y)
+
+    def go(self, world):
+        """Agent lifecycle"""
+        self.move(world)
+        self.harvest(world)
+        self.metabolize()
+        self.aging()
+        self.reproduce(world)  # Checks death condition
