@@ -5,9 +5,11 @@ NOTE:
 1.(Not Implemented)In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max) ???
 2.(Implemented)In Netlogo's implementation, agent initial wealth is set to metabolism + randint(0, 50)
 """
-import random, math
+import math
+import random
 
 
+# TODO: Time ticks
 class Agent:
 
     def __init__(self, life_expectancy_min, life_expectancy_max, max_metabolism, max_vision, x, y):
@@ -42,11 +44,6 @@ class Agent:
     def aging(self):
         """Ages"""
         self.age += 1
-
-    def harvest(self, world):
-        """Harvests the land and add to possession"""
-        self.wealth += world.get_grain(self.x, self.y)
-        world.harvest_grain(self.x, self.y)
 
     def metabolize(self):
         """Metabolizes if still has grain"""

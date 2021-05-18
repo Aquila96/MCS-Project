@@ -8,6 +8,7 @@ import random
 random.seed()
 
 
+# TODO: Time ticks & Growth Interval
 class World:
 
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):
