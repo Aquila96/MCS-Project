@@ -1,5 +1,6 @@
 """
 Patches in NetLogo
+NOTE: In this implementation, no agent initially spawns in the same patch
 """
 import math
 import random
@@ -23,7 +24,7 @@ class World:
         self.num_grain_grown = num_grain_grown
         self.percent_best_land = percent_best_land
         self.grain_growth_interval = grain_growth_interval
-        self.patches = [[[0, 0, None] for i in range(x)] for j in range(y)]
+        self.patches = [[[0, 0, []] for i in range(x)] for j in range(y)]
         # give some patches the highest amount of grain possible
         # these patches are the "best land"
         for i in range(len(self.patches)):
@@ -118,20 +119,21 @@ class World:
     def set_agent(self, x, y, agent):
         """Spawns (or updates) an agent at given patch"""
         self.assert_location(x, y)
-        self.patches[x][y] = (self.patches[x][y][0], self.patches[x][y][1], agent)
+        self.patches[x][y][2].append(agent)
 
-    def unset_agent(self, x, y):
+    def unset_agent(self, x, y, agent):
         """De-spawns an agent at given patch"""
-        self.patches[x][y] = (self.patches[x][y][0], self.patches[x][y][1], None)
+        self.assert_location(x, y)
+        self.patches[x][y][2].remove(agent)
 
     def get_agent(self, x, y):
-        """Returns an agent at given patch"""
+        """Returns a list of agents at given patch"""
         self.assert_location(x, y)
         return self.patches[x][y][2]
 
     def is_empty(self, x, y):
         """Returns boolean on whether patch is not occupied"""
-        return self.patches[x][y][2] is None
+        return len(self.get_agent(x, y)) == 0
 
     def list_empty_patch(self):
         """Returns a list of coordinates of patches that are not occupied"""
@@ -149,18 +151,19 @@ class World:
         for i in range(len(self.patches)):
             for j in range(len(self.patches[i])):
                 if not self.is_empty(i, j):
-                    agent = self.get_agent(i, j)
-                    if agent.get_wealth() > wealth_max:
-                        wealth_max = agent.get_wealth()
-                    if agent.get_wealth() < wealth_min:
-                        wealth_min = agent.get_wealth()
+                    for agent in self.get_agent(i, j):
+                        if agent.get_wealth() > wealth_max:
+                            wealth_max = agent.get_wealth()
+                        if agent.get_wealth() < wealth_min:
+                            wealth_min = agent.get_wealth()
 
         self.wealth_min = wealth_min
         self.wealth_max = wealth_max
 
-    def update(self):
-        """Updates stats about the world"""
+    def refresh(self):
+        """Updates stats about the world, grow grains"""
         self.update_wealth_range()
+        self.grow_grain()
 
     def assert_location(self, x, y):
         """Guards illegal values"""

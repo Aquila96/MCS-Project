@@ -5,7 +5,7 @@ NOTE:
 1.(Not Implemented)In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max) ???
 2.(Implemented)In Netlogo's implementation, agent initial wealth is set to metabolism + randint(0, 50)
 """
-import random
+import random, math
 
 
 # TODO: enable multi-agent harvesting
@@ -107,41 +107,50 @@ class Agent:
         self.heading = random.choice([0, 90, 180, 270])
 
     def move_random(self, world):
-        """Move to random direction"""
+        """Re-roll and move to random direction"""
         self.turn_towards_random()
         self.move(world)
+
+    def update_location(self, x, y):
+        """Updates location"""
+        self.x = x
+        self.y = y
 
     def move(self, world):
         """Moves to heading"""
         self.turn_towards_grain(world)
         if self.heading == 0:
             if self.x - 1 > -1:
-                world.unset_agent(self.x, self.y)
+                world.unset_agent(self.x, self.y, self)
                 world.set_agent(self.x - 1, self.y, self)
+                self.update_location(self.x - 1, self.y)
             else:
                 self.move_random(world)
         if self.heading == 90:
             if self.y + 1 < world.y:
-                world.unset_agent(self.x, self.y)
+                world.unset_agent(self.x, self.y, self)
                 world.set_agent(self.x, self.y + 1, self)
+                self.update_location(self.x, self.y + 1)
             else:
                 self.move_random(world)
         if self.heading == 180:
             if self.x + 1 < world.x:
-                world.unset_agent(self.x, self.y)
+                world.unset_agent(self.x, self.y, self)
                 world.set_agent(self.x + 1, self.y, self)
+                self.update_location(self.x + 1, self.y)
             else:
                 self.move_random(world)
         if self.heading == 270:
             if self.y - 1 > -1:
-                world.unset_agent(self.x, self.y)
+                world.unset_agent(self.x, self.y, self)
                 world.set_agent(self.x, self.y - 1, self)
+                self.update_location(self.x, self.y - 1)
             else:
                 self.move_random(world)
 
     def harvest(self, world):
-        """Harvests grain"""
-        self.wealth += world.get_grain(self.x, self.y)
+        """Harvests grain, if multiple agents on patch, they get equal amount"""
+        self.wealth += math.floor(world.get_grain(self.x, self.y) / len(world.get_agent(self.x, self.y)))
         world.harvest_grain(self.x, self.y)
 
     def go(self, world):

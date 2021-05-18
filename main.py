@@ -26,7 +26,6 @@ if __name__ == '__main__':
     while 1:
         for agent in agents:
             agent.go(world)
-        world.update()
-        world.grow_grain()
+        world.refresh()
         # display(world)
         time.sleep(1)
