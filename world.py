@@ -8,7 +8,6 @@ import random
 random.seed()
 
 
-# TODO: Convert (grain-here, max-grain-here, agent) to (grain-here, max-grain-here, [agent]) to enable multiple agent
 class World:
 
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):

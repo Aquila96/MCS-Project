@@ -8,7 +8,6 @@ NOTE:
 import random, math
 
 
-# TODO: enable multi-agent harvesting
 class Agent:
 
     def __init__(self, life_expectancy_min, life_expectancy_max, max_metabolism, max_vision, x, y):
