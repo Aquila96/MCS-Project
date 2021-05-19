@@ -21,7 +21,6 @@ class World:
         self.max_grain = max_grain
         self.wealth_min = 0
         self.wealth_max = 0
-        self.gini_index = 0
         self.num_grain_grown = num_grain_grown
         self.percent_best_land = percent_best_land
         self.grain_growth_interval = grain_growth_interval
@@ -170,11 +169,3 @@ class World:
         """Guards illegal values"""
         assert self.x > x >= 0
         assert self.y > y >= 0
-
-    def update_gini_index(self, agents):
-
-        wealth_list = [agent.get_wealth() for agent in agents]
-        wealth_list.sort()
-
-        linear_lorenz_step = self.wealth_max/len(agents)
-        self.gini_index = sum([linear_lorenz_step*i - sum(wealth_list[:i]) for i in wealth_list])
