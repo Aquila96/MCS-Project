@@ -4,7 +4,7 @@ Wealth Distribution simulation entrypoint
 import json
 import time
 from world import World
-from utils import spawn_agent
+import utils
 
 # TODO: Beautify output
 if __name__ == '__main__':
@@ -21,11 +21,7 @@ if __name__ == '__main__':
     # Spawn all agents
     agents = []
     for _ in range(settings['num_people']):
-        agents.append(spawn_agent(settings, world))
+        agents.append(utils.spawn_agent(settings, world))
     # Run and display
     while 1:
-        for agent in agents:
-            agent.go(world)
-        world.refresh()
-        # display(world)
-        time.sleep(1)
+        utils.go(agents, world, 1)

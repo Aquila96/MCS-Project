@@ -149,10 +149,3 @@ class Agent:
         self.wealth += math.floor(world.get_grain(self.x, self.y) / len(world.get_agent(self.x, self.y)))
         world.harvest_grain(self.x, self.y)
 
-    def go(self, world):
-        """Agent lifecycle"""
-        self.move(world)
-        self.harvest(world)
-        self.metabolize()
-        self.aging()
-        self.reproduce(world)  # Checks death condition
