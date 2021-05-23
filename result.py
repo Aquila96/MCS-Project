@@ -9,6 +9,7 @@ class Result:
         self.wealth_class_mid = []
         self.wealth_class_upper = []
         self.gini_index = []
+        self.lorenz_line = []
 
     def load_result(self, tick, world, agents):
         """
@@ -26,9 +27,13 @@ class Result:
         wealth_list = [agent.get_wealth() for agent in agents]
         wealth_list.sort()
         total_wealth = sum(wealth_list)
-        #linear_lorenz_step = world.wealth_max / len(agents)
-        #self.gini_index += [sum([linear_lorenz_step * i - sum(wealth_list[:i]) for i in wealth_list])]
-        self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
+        world.update_wealth_range()
+        linear_lorenz_area = total_wealth * len(agents) / 2
+        lorenz_line = [sum(wealth_list[:i+1]) for i in range(len(wealth_list))]
+        lorenz_line_area = sum(lorenz_line)
+        self.gini_index += [sum(lorenz_line) / linear_lorenz_area]
+        self.lorenz_line += [lorenz_line]
+        #self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
 
     def __append_wealth_classes(self, agents):
         low_class = 0
