@@ -18,8 +18,9 @@ def spawn_agent(settings, world):
     world.set_agent(x, y, agent)
     return agent
 
-def go(agents, world, t):
-    """Run simulation, with tick length"""
+
+def go(agents, world, result, report_tick=1, tick_time=1):
+    """Run simulation, with tick length in time and report per tick"""
     for agent in agents:
         agent.move(world)
     for agent in agents:
@@ -29,9 +30,11 @@ def go(agents, world, t):
     for agent in agents:
         agent.aging()
     for agent in agents:
-        agent.reproduce(world)        
+        agent.reproduce(world)
+    result.load_result(report_tick, world, agents)
+    result.stepwise_report()
     world.refresh()
-    time.sleep(t)
+    time.sleep(tick_time)
 # def display(world):
 
 # if __name__ == '__main__':

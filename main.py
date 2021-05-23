@@ -2,8 +2,8 @@
 Wealth Distribution simulation entrypoint
 """
 import json
-import time
 from world import World
+from result import Result
 import utils
 
 # TODO: Beautify output
@@ -12,6 +12,7 @@ if __name__ == '__main__':
         settings = json.load(f)
         f.close()
     # Construct world
+    result = Result()
     world = World(settings['x'],
                   settings['y'],
                   settings['max_grain'],
@@ -24,4 +25,4 @@ if __name__ == '__main__':
         agents.append(utils.spawn_agent(settings, world))
     # Run and display
     while 1:
-        utils.go(agents, world, 1)
+        utils.go(agents, world, result, report_tick=1, tick_time=1)
