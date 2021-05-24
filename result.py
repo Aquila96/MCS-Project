@@ -31,7 +31,7 @@ class Result:
         linear_lorenz_area = total_wealth * len(agents) / 2
         lorenz_line = [sum(wealth_list[:i + 1]) for i in range(len(wealth_list))]
         lorenz_line_area = sum(lorenz_line)
-        self.gini_index += [sum(lorenz_line) / linear_lorenz_area]
+        self.gini_index += [(linear_lorenz_area - sum(lorenz_line)) / linear_lorenz_area]
         self.lorenz_line += [lorenz_line]
         # self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
 
