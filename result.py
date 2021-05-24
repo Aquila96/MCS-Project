@@ -1,3 +1,6 @@
+import plot
+
+
 class Result:
 
     def __init__(self):
@@ -70,6 +73,9 @@ class Result:
                                               self.wealth_class_mid[-1],
                                               self.wealth_class_upper[-1],
                                               self.gini_index[-1]))
+
+        plot.plot_gini(self.tick, self.gini_index)
+
         return self.tick[-1], \
                self.wealth_min[-1], \
                self.wealth_max[-1], \
