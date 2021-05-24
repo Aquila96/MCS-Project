@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class Result:
 
     def __init__(self):
@@ -16,7 +18,7 @@ class Result:
         Loads results for the current tick
         Calculates wealth grouping and gini index
         """
-        self.tick += [tick]
+        self.tick += [tick] if len(self.tick) < 1 else [self.tick[-1] + tick]
         self.wealth_min += [world.wealth_min]
         self.wealth_max += [world.wealth_max]
         self.__append_gini_index(world, agents)
@@ -54,6 +56,10 @@ class Result:
 
     def stepwise_report(self):
         """Outputs result of each tick"""
+        plt.plot(self.tick, self.gini_index)
+        plt.show()
+        print(self.gini_index)
+        print(self.tick)
         print(self.gini_index[-1])
         return self.tick[-1], \
                self.wealth_min[-1], \
