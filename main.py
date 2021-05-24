@@ -25,4 +25,6 @@ if __name__ == '__main__':
         agents.append(utils.spawn_agent(settings, world))
     # Run and display
     while 1:
-        utils.go(agents, world, result, report_tick=1, tick_time=1)
+        utils.go(agents, world, result,
+                 report_interval=settings['report_interval'],
+                 refresh_interval=settings['refresh_interval'])
