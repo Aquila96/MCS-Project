@@ -8,7 +8,6 @@ import random
 random.seed()
 
 
-# TODO: Time ticks & Growth Interval
 class World:
 
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):
@@ -92,14 +91,15 @@ class World:
         self.assert_location(x, y)
         return self.patches[x][y][1]
 
-    def grow_grain(self):
+    def grow_grain(self, i):
         """Grows grain across all patches"""
-        for i in range(len(self.patches)):
-            for j in range(len(self.patches[i])):
-                if (self.get_grain(i, j) + self.num_grain_grown) <= self.get_max_grain(i, j):
-                    self.set_grain(i, j, self.get_grain(i, j) + self.num_grain_grown)
-                else:
-                    self.set_grain(i, j, self.max_grain)
+        if i % self.grain_growth_interval == 0:
+            for i in range(len(self.patches)):
+                for j in range(len(self.patches[i])):
+                    if (self.get_grain(i, j) + self.num_grain_grown) <= self.get_max_grain(i, j):
+                        self.set_grain(i, j, self.get_grain(i, j) + self.num_grain_grown)
+                    else:
+                        self.set_grain(i, j, self.max_grain)
 
     def set_grain(self, x, y, grain):
         """Sets grain of a patch"""
@@ -160,10 +160,10 @@ class World:
         self.wealth_min = wealth_min
         self.wealth_max = wealth_max
 
-    def refresh(self):
+    def refresh(self, i):
         """Updates stats about the world, grow grains"""
         self.update_wealth_range()
-        self.grow_grain()
+        self.grow_grain(i)
 
     def assert_location(self, x, y):
         """Guards illegal values"""

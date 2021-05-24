@@ -8,6 +8,8 @@
   "max_vision": 5,
   "num_people": 250,
   "percent_best_land": 0.1,
-  "grain_growth_interval": 1,
-  "num_grain_grown": 4
+  "grain_growth_interval": 2,
+  "num_grain_grown": 4,
+  "refresh_interval": 0.1,
+  "report_interval": 1
 }

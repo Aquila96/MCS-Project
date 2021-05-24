@@ -2,14 +2,13 @@
 Turtle logic
 
 NOTE:
-1.(Not Implemented)In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max) ???
+1.(Implemented)In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max) ???
 2.(Implemented)In Netlogo's implementation, agent initial wealth is set to metabolism + randint(0, 50)
 """
 import math
 import random
 
 
-# TODO: Time ticks
 class Agent:
 
     def __init__(self, life_expectancy_min, life_expectancy_max, max_metabolism, max_vision, x, y):
@@ -37,7 +36,7 @@ class Agent:
         self.life_expectancy = random.randint(self.life_expectancy_min, self.life_expectancy_max)
         self.metabolism = random.randint(1, self.max_metabolism)
         self.vision = random.randint(1, self.max_vision)
-        self.age = 0
+        self.age = random.randint(0, self.life_expectancy_max)
         if not self.offspring:
             self.wealth = self.metabolism + random.randint(0, 50)
 
