@@ -4,6 +4,7 @@ Turtle logic
 NOTE:
 1.(Implemented)In Netlogo's implementation, agent initial age is set to randint(0, life_expectancy_max) ???
 2.(Implemented)In Netlogo's implementation, agent initial wealth is set to metabolism + randint(0, 50)
+3.(Implemented)In Netlogo's implementation, agent offspring initial wealth is inconsistent with the description
 """
 import math
 import random
@@ -65,7 +66,8 @@ class Agent:
         if self.is_dead():
             self.offspring = True
             self.initialize()
-            self.wealth = random.randint(world.wealth_min, world.wealth_max)
+            #self.wealth = random.randint(world.wealth_min, world.wealth_max)
+            self.wealth = self.metabolism + random.randint(0, 50)
 
     def grain_ahead(self, world, heading):
         """Returns grain count within vision"""

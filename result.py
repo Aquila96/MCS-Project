@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 
 class Result:
 
@@ -56,11 +55,10 @@ class Result:
 
     def stepwise_report(self):
         """Outputs result of each tick"""
-        plt.plot(self.tick, self.gini_index)
-        plt.show()
-        print(self.gini_index)
-        print(self.tick)
-        print(self.gini_index[-1])
+        print('{}, {}, {}, {:2.2}'.format(self.wealth_class_low[-1],
+                                          self.wealth_class_mid[-1],
+                                          self.wealth_class_upper[-1],
+                                          self.gini_index[-1]))
         return self.tick[-1], \
                self.wealth_min[-1], \
                self.wealth_max[-1], \
