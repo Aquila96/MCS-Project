@@ -1,4 +1,3 @@
-
 class Result:
 
     def __init__(self):
@@ -30,11 +29,11 @@ class Result:
         total_wealth = sum(wealth_list)
         world.update_wealth_range()
         linear_lorenz_area = total_wealth * len(agents) / 2
-        lorenz_line = [sum(wealth_list[:i+1]) for i in range(len(wealth_list))]
+        lorenz_line = [sum(wealth_list[:i + 1]) for i in range(len(wealth_list))]
         lorenz_line_area = sum(lorenz_line)
         self.gini_index += [sum(lorenz_line) / linear_lorenz_area]
         self.lorenz_line += [lorenz_line]
-        #self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
+        # self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
 
     def __append_wealth_classes(self, agents):
         low_class = 0
@@ -55,10 +54,11 @@ class Result:
 
     def stepwise_report(self):
         """Outputs result of each tick"""
-        print('{}, {}, {}, {:2.2}'.format(self.wealth_class_low[-1],
-                                          self.wealth_class_mid[-1],
-                                          self.wealth_class_upper[-1],
-                                          self.gini_index[-1]))
+        print('{}, {}, {}, {}, {:2.2}'.format(self.tick[-1],
+                                              self.wealth_class_low[-1],
+                                              self.wealth_class_mid[-1],
+                                              self.wealth_class_upper[-1],
+                                              self.gini_index[-1]))
         return self.tick[-1], \
                self.wealth_min[-1], \
                self.wealth_max[-1], \
