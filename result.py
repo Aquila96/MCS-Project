@@ -34,14 +34,15 @@ class Result:
 
         # Calculate the total wealth in the system, and the area under a linear wealth distribution
         total_wealth = sum(wealth_list)
-        linear_lorenz_area = total_wealth * len(agents) / 2
+        #linear_lorenz_area = total_wealth * len(agents) / 2
+        linear_lorenz_area = 0.5
 
         # Convert the wealth list into a cumulative wealth list (lorenz curve), and append to results
-        lorenz_line = [sum(wealth_list[:i + 1]) for i in range(len(wealth_list))]
+        lorenz_line = [sum(wealth_list[:i + 1])/total_wealth for i in range(len(wealth_list))]
         self.lorenz_line += [lorenz_line]
 
         # Calculate the Gini Index, and append to results
-        self.gini_index += [(linear_lorenz_area - sum(lorenz_line)) / linear_lorenz_area]
+        self.gini_index += [(linear_lorenz_area - (sum(lorenz_line)/len(agents))) / linear_lorenz_area]
 
         # self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
 
