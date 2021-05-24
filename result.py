@@ -24,15 +24,25 @@ class Result:
 
     def __append_gini_index(self, world, agents):
         """Calculates gini index and appends to results"""
+
+        # Update the world wealth ranges
+        world.update_wealth_range()
+
+        # Get a list of the wealth of each agent and sort
         wealth_list = [agent.get_wealth() for agent in agents]
         wealth_list.sort()
+
+        # Calculate the total wealth in the system, and the area under a linear wealth distribution
         total_wealth = sum(wealth_list)
-        world.update_wealth_range()
         linear_lorenz_area = total_wealth * len(agents) / 2
+
+        # Convert the wealth list into a cumulative wealth list (lorenz curve), and append to results
         lorenz_line = [sum(wealth_list[:i + 1]) for i in range(len(wealth_list))]
-        lorenz_line_area = sum(lorenz_line)
-        self.gini_index += [(linear_lorenz_area - sum(lorenz_line)) / linear_lorenz_area]
         self.lorenz_line += [lorenz_line]
+
+        # Calculate the Gini Index, and append to results
+        self.gini_index += [(linear_lorenz_area - sum(lorenz_line)) / linear_lorenz_area]
+
         # self.gini_index += [sum( i/len(agents)-sum(wealth_list[:i+1])/total_wealth for i in range(len(agents)) )]
 
     def __append_wealth_classes(self, agents):
