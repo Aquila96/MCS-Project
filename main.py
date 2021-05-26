@@ -77,6 +77,6 @@ if __name__ == '__main__':
         f.close()
 
     # Run and display
-    run_multiple(50, 2)
+    run_multiple(400, 5)
 
 
