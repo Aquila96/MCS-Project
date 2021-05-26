@@ -24,7 +24,13 @@ if __name__ == '__main__':
     for _ in range(settings['num_people']):
         agents.append(utils.spawn_agent(settings, world))
     # Run and display
+    iteration = 0
     while 1:
-        utils.go(agents, world, result,
+        utils.go(iteration, agents, world, result,
+                 settings['reproducing_error'] == 1,
+                 settings['education_extension'] == 1,
+                 settings['education_cost_factor'],
+                 settings['education_vision_increase'],
                  report_interval=settings['report_interval'],
                  refresh_interval=settings['refresh_interval'])
+        iteration += 1

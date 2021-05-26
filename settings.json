@@ -11,5 +11,9 @@
   "grain_growth_interval": 2,
   "num_grain_grown": 4,
   "refresh_interval": 0.01,
-  "report_interval": 1
+  "report_interval": 1,
+  "education_extension": 1,
+  "education_vision_increase": 5,
+  "education_cost_factor": 1,
+  "reproducing_error": 1
 }

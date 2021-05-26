@@ -13,7 +13,7 @@ class World:
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):
         """
         Initializes world with dimensions x, y;
-        Each patch has 3-tuple: (grain-here, max-grain-here, agent)
+        Each patch has dictionary: (grain-here, max-grain-here, agent)
         """
         self.x = x
         self.y = y
@@ -23,7 +23,7 @@ class World:
         self.num_grain_grown = num_grain_grown
         self.percent_best_land = percent_best_land
         self.grain_growth_interval = grain_growth_interval
-        self.patches = [[[0, 0, []] for i in range(x)] for j in range(y)]
+        self.patches = [[{'grain': 0, 'max_grain': 0, 'agents': []} for i in range(x)] for j in range(y)]
         # give some patches the highest amount of grain possible
         # these patches are the "best land"
         for i in range(len(self.patches)):
@@ -84,52 +84,65 @@ class World:
     def set_max_grain(self, x, y, max_grain):
         """Sets max grain of a patch"""
         self.assert_location(x, y)
-        self.patches[x][y] = (self.patches[x][y][0], max_grain, self.patches[x][y][2])
+        self.patches[x][y]['max_grain'] = max_grain
 
     def get_max_grain(self, x, y):
         """Gets max grain of a patch"""
         self.assert_location(x, y)
-        return self.patches[x][y][1]
+        return self.patches[x][y]['max_grain']
 
-    def grow_grain(self, i):
+    def grow_grain(self, iteration):
         """Grows grain across all patches"""
-        if i % self.grain_growth_interval == 0:
+        if iteration % self.grain_growth_interval == 0:
             for i in range(len(self.patches)):
                 for j in range(len(self.patches[i])):
                     if (self.get_grain(i, j) + self.num_grain_grown) <= self.get_max_grain(i, j):
                         self.set_grain(i, j, self.get_grain(i, j) + self.num_grain_grown)
                     else:
-                        self.set_grain(i, j, self.max_grain)
+                        self.set_grain(i, j, self.get_max_grain(i, j))
 
     def set_grain(self, x, y, grain):
         """Sets grain of a patch"""
         self.assert_location(x, y)
-        self.patches[x][y] = (grain, self.patches[x][y][1], self.patches[x][y][2])
+        self.patches[x][y]['grain'] = grain
 
     def get_grain(self, x, y):
         """Returns grain of a patch"""
         self.assert_location(x, y)
-        return self.patches[x][y][0]
+        return self.patches[x][y]['grain']
+
+    def harvest(self):
+        for x in range(len(self.patches)):
+            for y in range(len(self.patches[x])):
+                self.harvest_grain(x, y)
 
     def harvest_grain(self, x, y):
         """Sets grain of a patch"""
         self.assert_location(x, y)
-        self.patches[x][y] = (0, self.patches[x][y][1], self.patches[x][y][2])
+
+        # If no agents are on the patch, don't harvest
+        if len(self.patches[x][y]['agents']) == 0:
+            return
+
+        # Harvest and set grain to zero
+        for agent in self.patches[x][y]['agents']:
+            agent.harvest(self.patches[x][y]['grain'] / len(self.patches[x][y]['agents']))
+        self.patches[x][y]['grain'] = 0
 
     def set_agent(self, x, y, agent):
         """Spawns (or updates) an agent at given patch"""
         self.assert_location(x, y)
-        self.patches[x][y][2].append(agent)
+        self.patches[x][y]['agents'].append(agent)
 
     def unset_agent(self, x, y, agent):
         """De-spawns an agent at given patch"""
         self.assert_location(x, y)
-        self.patches[x][y][2].remove(agent)
+        self.patches[x][y]['agents'].remove(agent)
 
     def get_agent(self, x, y):
         """Returns a list of agents at given patch"""
         self.assert_location(x, y)
-        return self.patches[x][y][2]
+        return self.patches[x][y]['agents']
 
     def is_empty(self, x, y):
         """Returns boolean on whether patch is not occupied"""

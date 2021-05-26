@@ -30,6 +30,7 @@ class Agent:
         self.wealth = None
         self.heading = None
         self.offspring = False
+        self.educated = False
         self.initialize()
 
     def initialize(self):
@@ -57,7 +58,7 @@ class Agent:
         """Returns wealth"""
         return self.wealth
 
-    def reproduce(self, world):
+    def reproduce(self, world, reproducing_error):
         """
         Reproduces an offspring with same parameters except for wealth
         Wealth ranging from the poorest person’s amount of grain to the richest person’s amount of grain
@@ -66,8 +67,10 @@ class Agent:
         if self.is_dead():
             self.offspring = True
             self.initialize()
-            #self.wealth = random.randint(world.wealth_min, world.wealth_max)
-            self.wealth = self.metabolism + random.randint(0, 50)
+            if reproducing_error:
+                self.wealth = self.metabolism + random.randint(0, 50)
+            else:
+                self.wealth = random.randint(world.wealth_min, world.wealth_max)
 
     def grain_ahead(self, world, heading):
         """Returns grain count within vision"""
@@ -145,8 +148,20 @@ class Agent:
             else:
                 self.move_random(world)
 
-    def harvest(self, world):
+    def harvest(self, harvest_yield):
         """Harvests grain, if multiple agents on patch, they get equal amount"""
-        self.wealth += math.floor(world.get_grain(self.x, self.y) / len(world.get_agent(self.x, self.y)))
-        world.harvest_grain(self.x, self.y)
+        #self.wealth += math.floor(world.get_grain(self.x, self.y) / len(world.get_agent(self.x, self.y)))
+        #world.harvest_grain(self.x, self.y)
+        self.wealth += harvest_yield
 
+    def educate(self, additional_vision, education_cost):
+
+
+        if not self.educated and self.wealth > education_cost * 2:
+            self.educated = True
+            self.vision += additional_vision
+            self.wealth -= education_cost
+
+            # Check for vision exceeding the maximum
+            if self.vision > self.max_vision:
+                self.vision = self.max_vision
