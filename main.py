@@ -2,15 +2,14 @@
 Wealth Distribution simulation entrypoint
 """
 import json
+
+from plot import average, plot_gini_multiple
 from world import World
 from result import Result
 import utils
 
-# TODO: Beautify output
-if __name__ == '__main__':
-    with open('settings.json') as f:
-        settings = json.load(f)
-        f.close()
+
+def setup():
     # Construct world
     result = Result()
     world = World(settings['x'],
@@ -23,7 +22,12 @@ if __name__ == '__main__':
     agents = []
     for _ in range(settings['num_people']):
         agents.append(utils.spawn_agent(settings, world))
-    # Run and display
+
+    return result, world, agents
+
+
+def run_indefinitely():
+    result, world, agents = setup()
     iteration = 0
     while 1:
         utils.go(iteration, agents, world, result,
@@ -34,3 +38,45 @@ if __name__ == '__main__':
                  report_interval=settings['report_interval'],
                  refresh_interval=settings['refresh_interval'])
         iteration += 1
+
+
+def run_limit(n_iterations):
+    result, world, agents = setup()
+    iteration = 0
+    while iteration < n_iterations:
+        utils.go(iteration, agents, world, result,
+                 settings['reproducing_error'] == 1,
+                 settings['education_extension'] == 1,
+                 settings['education_cost_factor'],
+                 settings['education_vision_increase'],
+                 report_interval=settings['report_interval'],
+                 refresh_interval=settings['refresh_interval'])
+        iteration += 1
+
+    return result
+
+
+def run_multiple(n_iterations, n_times):
+    results = []
+    for i in range(n_times):
+        results += [run_limit(n_iterations)]
+    cum_avg = 0
+    for result in results:
+        cum_avg += average(result.gini_index)
+
+    print("Average Gini: " + str(cum_avg / len(results)))
+    plot_gini_multiple(n_iterations, results)
+
+
+# TODO: Beautify output
+if __name__ == '__main__':
+
+    # Import Settings
+    with open('settings.json') as f:
+        settings = json.load(f)
+        f.close()
+
+    # Run and display
+    run_multiple(50, 2)
+
+
