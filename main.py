@@ -35,6 +35,7 @@ def run_indefinitely():
                  settings['education_extension'] == 1,
                  settings['education_cost_factor'],
                  settings['education_vision_increase'],
+                 settings['inherit_property_extension'] == 1,
                  report_interval=settings['report_interval'],
                  refresh_interval=settings['refresh_interval'])
         iteration += 1
@@ -49,6 +50,7 @@ def run_limit(n_iterations):
                  settings['education_extension'] == 1,
                  settings['education_cost_factor'],
                  settings['education_vision_increase'],
+                 settings['inherit_property_extension'] == 1,
                  report_interval=settings['report_interval'],
                  refresh_interval=settings['refresh_interval'])
         iteration += 1
@@ -77,6 +79,6 @@ if __name__ == '__main__':
         f.close()
 
     # Run and display
-    run_multiple(50, 2)
+    run_multiple(1000, 5)
 
 

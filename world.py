@@ -23,7 +23,7 @@ class World:
         self.num_grain_grown = num_grain_grown
         self.percent_best_land = percent_best_land
         self.grain_growth_interval = grain_growth_interval
-        self.patches = [[{'grain': 0, 'max_grain': 0, 'agents': []} for i in range(x)] for j in range(y)]
+        self.patches = [[{'grain': 0, 'max_grain': 0, 'agents': [], 'owner': None} for i in range(x)] for j in range(y)]
         # give some patches the highest amount of grain possible
         # these patches are the "best land"
         for i in range(len(self.patches)):
@@ -126,7 +126,12 @@ class World:
 
         # Harvest and set grain to zero
         for agent in self.patches[x][y]['agents']:
-            agent.harvest(self.patches[x][y]['grain'] / len(self.patches[x][y]['agents']))
+            if self.is_patch_owned(x, y):
+                agent.harvest((self.patches[x][y]['grain'] / len(self.patches[x][y]['agents'])) * 0.7)
+                self.patches[x][y]['owner'].harvest(
+                    self.patches[x][y]['grain'] * 0.3 / len(self.patches[x][y]['agents']))
+            else:
+                agent.harvest(self.patches[x][y]['grain'] / len(self.patches[x][y]['agents']))
         self.patches[x][y]['grain'] = 0
 
     def set_agent(self, x, y, agent):
@@ -182,3 +187,21 @@ class World:
         """Guards illegal values"""
         assert self.x > x >= 0
         assert self.y > y >= 0
+
+    def is_patch_owned(self, x, y):
+        return not self.patches[x][y]['owner'] is None
+
+    def get_ownerless_patches(self):
+        free = []
+        for x in range(len(self.patches)):
+            for y in range(len(self.patches[x])):
+                if not self.is_patch_owned(x, y):
+                    free += [{'price': self.patches[x][y]['max_grain'] * 20, 'x': x, 'y': y}]
+
+        return free
+
+    def set_patch_owner(self, x, y, agent):
+        self.patches[x][y]['owner'] = agent
+
+    def clear_patch_owner(self, x, y):
+        self.patches[x][y]['owner'] = None

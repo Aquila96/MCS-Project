@@ -28,6 +28,8 @@ class Agent:
         self.x = x
         self.y = y
         self.wealth = None
+        self.assets = 0
+        self.patches = []
         self.heading = None
         self.offspring = False
         self.educated = False
@@ -50,27 +52,37 @@ class Agent:
         """Metabolizes if still has grain"""
         self.wealth -= self.metabolism
 
-    def is_dead(self):
+    def is_dead(self, world):
         """Dies from starvation or aging"""
+        if self.wealth <= 0 and self.assets > 0:
+            sell = self.patches.pop()
+            self.wealth += sell['price']
+            self.assets -= sell['price']
+            world.clear_patch_owner(sell['x'], sell['y'])
         return self.wealth <= 0 or self.age >= self.life_expectancy
 
     def get_wealth(self):
         """Returns wealth"""
-        return self.wealth
+        return self.wealth + self.assets
 
-    def reproduce(self, world, reproducing_error):
+    def reproduce(self, world, reproduce_error, inherit):
         """
         Reproduces an offspring with same parameters except for wealth
         Wealth ranging from the poorest person’s amount of grain to the richest person’s amount of grain
         Calls initialize() to re-setup
         """
-        if self.is_dead():
+        if self.is_dead(world):
             self.offspring = True
             self.initialize()
-            if reproducing_error:
-                self.wealth = self.metabolism + random.randint(0, 50)
+            if not inherit:
+                if reproduce_error:
+                    self.wealth = 25
+                    # self.wealth = self.metabolism + random.randint(0, 50)
+                else:
+                    self.wealth = random.randint(world.wealth_min, world.wealth_max)
             else:
-                self.wealth = random.randint(world.wealth_min, world.wealth_max)
+                if self.wealth <= 0:
+                    self.wealth = 25
 
     def grain_ahead(self, world, heading):
         """Returns grain count within vision"""
@@ -156,7 +168,6 @@ class Agent:
 
     def educate(self, additional_vision, education_cost):
 
-
         if not self.educated and self.wealth > education_cost * 2:
             self.educated = True
             self.vision += additional_vision
@@ -165,3 +176,13 @@ class Agent:
             # Check for vision exceeding the maximum
             if self.vision > self.max_vision:
                 self.vision = self.max_vision
+
+    def buy_land(self, world):
+        free = world.get_ownerless_patches()
+        for patch in free:
+            if self.wealth > patch['price'] + 100:
+                self.patches += [patch]
+                self.assets += patch['price']
+                self.wealth -= patch['price']
+                world.set_patch_owner(patch['x'], patch['y'], self)
+
