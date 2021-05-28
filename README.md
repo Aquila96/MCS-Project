@@ -24,7 +24,7 @@ The program outputs four stats of the model in terminal, they are:
 
 ## Parameters
 
-There are four types of parameters in our model:
+There are five types of parameters in our model:
 
 - Intrinsic: parameters in the Netlogo model but are found in secondary menu or hardcoded
 - Agent : parameters in the Netlogo model, related to turtles
