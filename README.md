@@ -1,20 +1,26 @@
-# Introduction
+## Introduction
 
 This is a replication of the Netlogo Model [Wealth Distribution](https://ccl.northwestern.edu/netlogo/models/Daisyworld) in Python.
 
 Turtles and patches in the netlogo model are referred to as agents and world in this implementation
 
-# Requirements
+## Requirements
 
 - Python >= 3.7
 
-# How to run it
+## How to run it
  
 Simply Run the model using
 
 ```python main.py```
 
-# Parameters
+## Outputs
+
+The program outputs four stats of the model in terminal, they are:
+
+```tick, low income agent count, med income agent count, high income agent count, gini index```
+
+## Parameters
 
 You can view and change the parameters in ```settings.json```
 
@@ -41,17 +47,17 @@ You can view and change the parameters in ```settings.json```
 | purchase_price_multiplier   | Extension | Multiplier of the number of grains to determine the land value|
 | rent_percentage_of_yield    | Extension | Fraction of the land value to determine the rent|
 
-# Extensions
+## Extensions
 
-## Inheritance
+### Inheritance
 
 Enables wealth inheritance.
 
-## Property
+### Property
 
 Enables the agents to buy and sell patches and collect rent as capital income.
 
-# Notes
+## Notes
 
 There is one major difference between the Netlogo code and its description. The description states:
 
