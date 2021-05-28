@@ -1,6 +1,6 @@
 ## Introduction
 
-This is a replication of the Netlogo Model [Wealth Distribution](https://ccl.northwestern.edu/netlogo/models/Daisyworld) in Python.
+This is a replication of the Netlogo model [Wealth Distribution](https://ccl.northwestern.edu/netlogo/models/Daisyworld) in Python.
 
 Turtles and patches in the netlogo model are referred to as agents and world in this implementation
 
@@ -10,7 +10,7 @@ Turtles and patches in the netlogo model are referred to as agents and world in 
 
 ## How to run it
  
-Simply Run the model using
+Simply run the model using
 
 ```python main.py```
 
@@ -73,3 +73,7 @@ In all, these characteristics are replicated:
 - Initial Wealth is set to metabolism + random integer in range 0 to 50
 - Wealth of Offsprings of agents are initialized with the same method as the first generation ones. You can let the model behave like in the Netlogo description by using the flag ```reproducing_error```
 
+## References
+
+- Wilensky, U. (1998). NetLogo Wealth Distribution model. http://ccl.northwestern.edu/netlogo/models/WealthDistribution. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+- Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
