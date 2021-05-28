@@ -4,7 +4,7 @@ Wealth Distribution simulation entrypoint
 import json
 
 from agent import Agent
-from plot import average, plot_gini_multiple
+#from plot import average, plot_gini_multiple
 from world import World
 from result import Result
 import utils
@@ -70,7 +70,7 @@ def run_multiple(n_iterations, n_times):
         cum_avg += average(result.gini_index)
 
     print("Average Gini: " + str(cum_avg / len(results)))
-    plot_gini_multiple(n_iterations, results)
+    #plot_gini_multiple(n_iterations, results)
 
 
 # TODO: Beautify output
