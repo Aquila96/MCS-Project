@@ -67,11 +67,11 @@ Instead, the Netlogo code has the same method for generating initial wealth for 
 
 Also, there are some behaviors that are not explicitly explained
 
-In all, these characteristics are replicated:
+In all, these characteristics from Netlogo code are replicated:
 
-- Initial age of the turtle is set to a random integer in range ```0``` to ```life_expectancy_max```
-- Initial Wealth is set to metabolism + random integer in range ```0``` to ```50```
-- Wealth of Offsprings of agents are initialized with the same method as the first generation ones. You can let the model behave like in the Netlogo description by using the flag ```reproducing_error```
+- Initial age of turtles (both first generation and offspring) is set to a random integer in range ```0``` to ```life_expectancy_max```
+- Initial wealth is set to metabolism + random integer in range ```0``` to ```50```
+- Wealth of offsprings of agents are initialized with the same method as the first generation ones. You can let the model behave like in the Netlogo description by using the flag ```reproducing_error```
 
 ## References
 
