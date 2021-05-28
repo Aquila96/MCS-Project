@@ -1,5 +1,5 @@
 """
-
+Utilities helping the model to run 
 """
 import random
 import time
@@ -28,7 +28,7 @@ def go(iteration,
        inherit_extension,
        report_interval=1,
        refresh_interval=1):
-    """Run simulation, with tick length in time and report per tick"""
+    """Run simulation, with tick length in time and tick per report"""
     for agent in agents:
         agent.move(world)
     world.harvest()
@@ -43,7 +43,3 @@ def go(iteration,
     result.stepwise_report()
     world.refresh(iteration)
     time.sleep(refresh_interval)
-# def display(world):
-
-# if __name__ == '__main__':
-#    spawn_agent()
