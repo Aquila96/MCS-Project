@@ -59,7 +59,7 @@ Enables the agents to buy and sell patches and collect rent as capital income.
 
 ## Notes
 
-There is one major difference between the Netlogo code and its description. The description states:
+There is one major discrepancy between the Netlogo code and its description. The description states:
 
 >The offspring has a random metabolism and a random amount of grain, ranging from the poorest person’s amount of grain to the richest person’s amount of grain
 
@@ -69,8 +69,8 @@ Also, there are some behaviors that are not explicitly explained
 
 In all, these characteristics are replicated:
 
-- Initial age of the turtle is set to a random integer in range 0 to ```life_expectancy_max```
-- Initial Wealth is set to metabolism + random integer in range 0 to 50
+- Initial age of the turtle is set to a random integer in range ```0``` to ```life_expectancy_max```
+- Initial Wealth is set to metabolism + random integer in range ```0``` to ```50```
 - Wealth of Offsprings of agents are initialized with the same method as the first generation ones. You can let the model behave like in the Netlogo description by using the flag ```reproducing_error```
 
 ## References
