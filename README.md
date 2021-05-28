@@ -2,11 +2,13 @@
 
 This is a replication of the Netlogo model [Wealth Distribution](https://ccl.northwestern.edu/netlogo/models/Daisyworld) in Python.
 
-Turtles and patches in the netlogo model are referred to as agents and world in this implementation
+Turtles and patches in the Netlogo model are referred to as agents and world in this implementation
 
 ## Requirements
 
 - Python >= 3.7
+
+**The program do not require any third party libraries to run, but some commented out code for plotting purposes can be found**
 
 ## How to run it
  
@@ -21,6 +23,14 @@ The program outputs four stats of the model in terminal, they are:
 ```tick, low income agent count, med income agent count, high income agent count, gini index```
 
 ## Parameters
+
+There are four types of parameters in our model:
+
+- Intrinsic: parameters in the Netlogo model but are found in secondary menu or hardcoded
+- Agent : parameters in the Netlogo model, related to turtles
+- World : parameters in the Netlogo model, related to patches
+- System : determines other behaviours of the program
+- Extension : toggles for extensions and their parameters
 
 You can view and change the parameters in ```settings.json```
 
@@ -43,9 +53,9 @@ You can view and change the parameters in ```settings.json```
 | reproducing_error           | System    | Whether the model reproduces the implementation error in Netlogo code, see the notes below for more information|
 | inherit_extension           | Extension | Toggle for the Inheritance extension|
 | property_extension          | Extension | Toggle for the Property extension to the model|
-| agent_purchase_patch_buffer | Extension | Amount of grain the agent cannot spend on purchasing patches|
-| purchase_price_multiplier   | Extension | Multiplier of the number of grains to determine the land value|
-| rent_percentage_of_yield    | Extension | Fraction of the land value to determine the rent|
+| agent_purchase_patch_buffer | Extension | Property Extension: Amount of grain the agent cannot spend on purchasing patches|
+| purchase_price_multiplier   | Extension | Property Extension: Multiplier of the number of grains to determine the land value|
+| rent_percentage_of_yield    | Extension | Property Extension: Fraction of the land value to determine the rent|
 
 ## Extensions
 
