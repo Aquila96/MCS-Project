@@ -19,21 +19,26 @@ def spawn_agent(settings, world):
     return agent
 
 
-def go(iteration, agents, world, result, reproducing_error, education_extension, education_cost_percentage, education_vision_increase, report_interval=1, refresh_interval=1):
+def go(iteration,
+       agents,
+       world,
+       result,
+       reproducing_error,
+       property_extension,
+       inherit_extension,
+       report_interval=1,
+       refresh_interval=1):
     """Run simulation, with tick length in time and report per tick"""
-    if education_extension and iteration > 0:
-        education_cost = int(education_cost_percentage * (world.wealth_max + world.wealth_min) / 2)
-        for agent in agents:
-            agent.educate(education_vision_increase, education_cost)
     for agent in agents:
         agent.move(world)
     world.harvest()
     for agent in agents:
-        #agent.harvest(world)
         agent.metabolize()
         agent.aging()
+        if property_extension:
+            agent.buy_land(world)
     for agent in agents:
-        agent.reproduce(world, reproducing_error)
+        agent.reproduce(world, reproducing_error, inherit_extension)
     result.load_result(report_interval, world, agents)
     result.stepwise_report()
     world.refresh(iteration)

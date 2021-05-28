@@ -10,6 +10,9 @@ random.seed()
 
 class World:
 
+    rent_percentage = 0
+    patch_price_multiplier = 0
+
     def __init__(self, x, y, max_grain, percent_best_land, grain_growth_interval, num_grain_grown):
         """
         Initializes world with dimensions x, y;
@@ -18,12 +21,14 @@ class World:
         self.x = x
         self.y = y
         self.max_grain = max_grain
-        self.wealth_min = 0
-        self.wealth_max = 0
+        self.wealth_total_min = 0
+        self.wealth_total_max = 0
+        self.liquid_wealth_max = 0
+        self.liquid_wealth_min = 0
         self.num_grain_grown = num_grain_grown
         self.percent_best_land = percent_best_land
         self.grain_growth_interval = grain_growth_interval
-        self.patches = [[{'grain': 0, 'max_grain': 0, 'agents': []} for i in range(x)] for j in range(y)]
+        self.patches = [[{'grain': 0, 'max_grain': 0, 'agents': [], 'owner': None} for i in range(x)] for j in range(y)]
         # give some patches the highest amount of grain possible
         # these patches are the "best land"
         for i in range(len(self.patches)):
@@ -126,7 +131,19 @@ class World:
 
         # Harvest and set grain to zero
         for agent in self.patches[x][y]['agents']:
-            agent.harvest(self.patches[x][y]['grain'] / len(self.patches[x][y]['agents']))
+
+            # Only split grain between agents and owner if a patch is owned
+            if self.is_patch_owned(x, y):
+                agent.harvest((self.patches[x][y]['grain'] / len(self.patches[x][y]['agents'])) *
+                              (1-World.rent_percentage))
+                self.patches[x][y]['owner'].harvest(
+                    self.patches[x][y]['grain'] * World.rent_percentage / len(self.patches[x][y]['agents']))
+
+            # Otherwise, split grain between the agents present
+            else:
+                agent.harvest(self.patches[x][y]['grain'] / len(self.patches[x][y]['agents']))
+
+        # Update the grain level (complete harvest)
         self.patches[x][y]['grain'] = 0
 
     def set_agent(self, x, y, agent):
@@ -161,17 +178,28 @@ class World:
         """Updates the poorest and richest values"""
         wealth_max = 0
         wealth_min = 10000
+        liquid_wealth_max = 0
+        liquid_wealth_min = 10000
+
+        # Loop through every agent in each patch and calculate the revised wealth range
         for i in range(len(self.patches)):
             for j in range(len(self.patches[i])):
                 if not self.is_empty(i, j):
                     for agent in self.get_agent(i, j):
-                        if agent.get_wealth() > wealth_max:
-                            wealth_max = agent.get_wealth()
-                        if agent.get_wealth() < wealth_min:
-                            wealth_min = agent.get_wealth()
+                        if agent.get_total_wealth() > wealth_max:
+                            wealth_max = agent.get_total_wealth()
+                        if agent.get_total_wealth() < wealth_min:
+                            wealth_min = agent.get_total_wealth()
+                        if agent.get_liquid_wealth() > liquid_wealth_max:
+                            liquid_wealth_max = agent.get_liquid_wealth()
+                        if agent.get_liquid_wealth() < liquid_wealth_min:
+                            liquid_wealth_min = agent.get_liquid_wealth()
 
-        self.wealth_min = wealth_min
-        self.wealth_max = wealth_max
+        # Update the world variables
+        self.wealth_total_min = wealth_min
+        self.wealth_total_max = wealth_max
+        self.liquid_wealth_min = liquid_wealth_min
+        self.liquid_wealth_max = liquid_wealth_max
 
     def refresh(self, i):
         """Updates stats about the world, grow grains"""
@@ -182,3 +210,25 @@ class World:
         """Guards illegal values"""
         assert self.x > x >= 0
         assert self.y > y >= 0
+
+    def is_patch_owned(self, x, y):
+        """Checks if a patch is owner or not"""
+        return not self.patches[x][y]['owner'] is None
+
+    def get_ownerless_patches(self):
+        """Finds patches that are not owned, and calculates their price"""
+        free = []
+        for x in range(len(self.patches)):
+            for y in range(len(self.patches[x])):
+                if not self.is_patch_owned(x, y):
+                    free += [{'price': self.patches[x][y]['max_grain'] * World.patch_price_multiplier, 'x': x, 'y': y}]
+
+        return free
+
+    def set_patch_owner(self, x, y, agent):
+        """Sets the owner of a patch"""
+        self.patches[x][y]['owner'] = agent
+
+    def clear_patch_owner(self, x, y):
+        """Removes an owners of a patch"""
+        self.patches[x][y]['owner'] = None

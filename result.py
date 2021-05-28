@@ -1,5 +1,7 @@
-import plot
-
+"""
+Results class
+Stores results from a run of the model and calculates the required metrics
+"""
 
 class Result:
 
@@ -20,8 +22,8 @@ class Result:
         Calculates wealth grouping and gini index
         """
         self.tick += [tick] if len(self.tick) < 1 else [self.tick[-1] + tick]
-        self.wealth_min += [world.wealth_min]
-        self.wealth_max += [world.wealth_max]
+        self.wealth_min += [world.wealth_total_min]
+        self.wealth_max += [world.wealth_total_max]
         self.__append_gini_index(world, agents)
         self.__append_wealth_classes(agents)
 
@@ -32,7 +34,7 @@ class Result:
         world.update_wealth_range()
 
         # Get a list of the wealth of each agent and sort
-        wealth_list = [agent.get_wealth() for agent in agents]
+        wealth_list = [agent.get_total_wealth() for agent in agents]
         wealth_list.sort()
 
         # Calculate the total wealth in the system, and the area under a linear wealth distribution
@@ -55,9 +57,9 @@ class Result:
         up_class = 0
 
         for agent in agents:
-            if agent.get_wealth() <= self.wealth_max[-1] / 3:
+            if agent.get_total_wealth() <= self.wealth_max[-1] / 3:
                 low_class += 1
-            elif agent.get_wealth() <= self.wealth_max[-1] * 2 / 3:
+            elif agent.get_total_wealth() <= self.wealth_max[-1] * 2 / 3:
                 mid_class += 1
             else:
                 up_class += 1
