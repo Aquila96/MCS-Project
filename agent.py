@@ -12,6 +12,8 @@ import random
 
 class Agent:
 
+    patch_purchase_buffer = 0
+
     def __init__(self, life_expectancy_min, life_expectancy_max, max_metabolism, max_vision, x, y):
         """
         Initializes an agent with location, life_expectancy, metabolism & vision;
@@ -61,7 +63,11 @@ class Agent:
             world.clear_patch_owner(sell['x'], sell['y'])
         return self.wealth <= 0 or self.age >= self.life_expectancy
 
-    def get_wealth(self):
+    def get_liquid_wealth(self):
+        """Returns wealth"""
+        return self.wealth
+
+    def get_total_wealth(self):
         """Returns wealth"""
         return self.wealth + self.assets
 
@@ -76,13 +82,12 @@ class Agent:
             self.initialize()
             if not inherit:
                 if reproduce_error:
-                    self.wealth = 25
-                    # self.wealth = self.metabolism + random.randint(0, 50)
+                    self.wealth = self.metabolism + random.randint(0, 50)
                 else:
-                    self.wealth = random.randint(world.wealth_min, world.wealth_max)
+                    self.wealth = random.randint(world.liquid_wealth_min, world.liquid_wealth_max)
             else:
                 if self.wealth <= 0:
-                    self.wealth = 25
+                    self.wealth = random.randint(world.liquid_wealth_min, world.liquid_wealth_max)
 
     def grain_ahead(self, world, heading):
         """Returns grain count within vision"""
@@ -162,25 +167,12 @@ class Agent:
 
     def harvest(self, harvest_yield):
         """Harvests grain, if multiple agents on patch, they get equal amount"""
-        #self.wealth += math.floor(world.get_grain(self.x, self.y) / len(world.get_agent(self.x, self.y)))
-        #world.harvest_grain(self.x, self.y)
         self.wealth += math.floor(harvest_yield)
-
-    def educate(self, additional_vision, education_cost):
-
-        if not self.educated and self.wealth > education_cost * 2:
-            self.educated = True
-            self.vision += additional_vision
-            self.wealth -= education_cost
-
-            # Check for vision exceeding the maximum
-            if self.vision > self.max_vision:
-                self.vision = self.max_vision
 
     def buy_land(self, world):
         free = world.get_ownerless_patches()
         for patch in free:
-            if self.wealth > patch['price'] + 100:
+            if self.wealth > patch['price'] + Agent.patch_purchase_buffer:
                 self.patches += [patch]
                 self.assets += patch['price']
                 self.wealth -= patch['price']

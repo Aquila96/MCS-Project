@@ -12,9 +12,10 @@
   "num_grain_grown": 4,
   "refresh_interval": 0.01,
   "report_interval": 1,
-  "education_extension": 0,
-  "education_vision_increase": 5,
-  "education_cost_factor": 0,
   "reproducing_error": 0,
-  "inherit_property_extension": 1
+  "property_extension": 0,
+  "agent_purchase_patch_buffer": 100,
+  "purchase_price_multiplier": 20,
+  "rent_percentage_of_yield": 0.3,
+  "inherit_extension": 1
 }
